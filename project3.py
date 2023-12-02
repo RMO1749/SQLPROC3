@@ -142,5 +142,37 @@ def create_book_copies_trigger():
     finally:
         conn.close()
 
+def insert_borrower(name, address, phone):
+    db_path = r'C:\Users\HP\Documents\GitHub\sqlite-tools-win32-x86-3430100\project3.db'
+    conn = connect_to_database(db_path)
+    try:
+        cursor = conn.cursor()
+        cursor.execute('''
+                       INSERT INTO BORROWER (Name, Address, Phone) VALUES (?, ?, ?)
+                       ''', (name, address, phone))
+        conn.commit()
+    except sqlite3.Error as e:
+        print("SQLite error: ", e)
+    finally:
+        conn.close()
 
+def get_borrower_with_column_names():
+    db_path = r'C:\Users\HP\Documents\GitHub\sqlite-tools-win32-x86-3430100\project3.db'
+    conn = connect_to_database(db_path)
+    try:
+        cursor = conn.cursor()
+        # Execute a query to get column names
+        cursor.execute("SELECT * FROM BORROWER LIMIT 0")
+        column_names = [description[0] for description in cursor.description]
+
+        # Execute a query to get all data
+        cursor.execute("SELECT * FROM BORROWER")
+        borrower = cursor.fetchall()
+
+        return column_names, borrower
+    except sqlite3.Error as e:
+        print("SQLite error: ", e)
+        return [], []  # Return empty lists in case of error
+    finally:
+        conn.close()
 
