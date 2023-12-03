@@ -301,32 +301,33 @@ def get_book_info_with_column_names(bookidOrbookTitle, borrower_id):
     try:
         cursor = conn.cursor()
         # Execute a query to get column names
-        
+        cursor.execute('''SELECT book_id, card_no, date_out, due_date, returned_date, totaldaysloanedout, title, totaldaysreturnedlate, branch_id,
+                          (CASE WHEN LateFeeBalance = 0 THEN 'NON APPLICABLE' 
+                          ELSE '$' || printf("%.2f", LateFeeBalance) 
+                          END) AS LateFeeBalance
+                          FROM vBookLoanInfo                          
+                          LIMIT 0;''')
+        column_names = [description[0] for description in cursor.description]
 
         # Execute a query to get all data
-        cursor.execute('''SELECT *,
-                          CASE WHEN LateFeeBalance = 0 THEN 'NON APPLICABLE' 
+        cursor.execute('''SELECT book_id, card_no, date_out, due_date, returned_date, totaldaysloanedout, title, totaldaysreturnedlate, branch_id,
+                          (CASE WHEN LateFeeBalance = 0 THEN 'NON APPLICABLE' 
                           ELSE '$' || printf("%.2f", LateFeeBalance) 
-                          END AS LateFeeBalance
-                          FROM vBookLoanInfo
+                          END) AS LateFeeBalance
+                          FROM vBookLoanInfo 
                           WHERE Card_No = ? ''', (borrower_id,))
         borrower_info = cursor.fetchall()
+        
 
-        cursor.execute('''SELECT *,
-                          CASE WHEN LateFeeBalance = 0 THEN 'NON APPLICABLE' 
+        cursor.execute('''SELECT book_id, card_no, date_out, due_date, returned_date, totaldaysloanedout, title, totaldaysreturnedlate, branch_id,
+                          (CASE WHEN LateFeeBalance = 0 THEN 'NON APPLICABLE' 
                           ELSE '$' || printf("%.2f", LateFeeBalance) 
-                          END AS LateFeeBalance
-                          FROM vBookLoanInfo
+                          END) AS LateFeeBalance
+                          FROM vBookLoanInfo 
                           WHERE Title LIKE '%' || ? || '%'
                           OR Book_id = ? 
                            ''', (bookidOrbookTitle, bookidOrbookTitle ))
         bookidOrbookTitle_info = cursor.fetchall()
-
-        cursor.execute('''SELECT *
-                          FROM vBookLoanInfo
-                          WHERE Card_No = ?
-                          LIMIT 0;''', (borrower_id,))
-        column_names = [description[0] for description in cursor.description]
         
 
         return column_names, borrower_info, bookidOrbookTitle_info
