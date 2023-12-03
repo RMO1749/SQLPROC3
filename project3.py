@@ -87,6 +87,20 @@ def get_all_book_titles():
     finally:
         conn.close()
 
+def get_all_book_publisher():
+    db_path = r'C:\Users\HP\Documents\GitHub\sqlite-tools-win32-x86-3430100\project3.db'
+    conn = connect_to_database(db_path)
+    try:
+        cursor = conn.cursor()
+        cursor.execute("SELECT Name FROM PUBLISHER")
+        bookPublishers = cursor.fetchall()
+        return [bookPublisher[0] for bookPublisher in bookPublishers]  
+    except sqlite3.Error as e:
+        print("SQLite error: ", e)
+        return []  
+    finally:
+        conn.close()
+
 def get_all_cardNo():
     db_path = r'C:\Users\HP\Documents\GitHub\sqlite-tools-win32-x86-3430100\project3.db'
     conn = connect_to_database(db_path)
@@ -120,6 +134,59 @@ def insert_book_loan(book_id, branch_id, card_number, date_out, due_date, return
         print("SQLite error: ", e)
     finally:
         conn.close()
+
+def insert_into_book(title, book_publisher):
+    db_path = r'C:\Users\HP\Documents\GitHub\sqlite-tools-win32-x86-3430100\project3.db'
+    conn = sqlite3.connect(db_path)
+    try:
+        cursor = conn.cursor()
+        cursor.execute("INSERT INTO BOOK (Title, book_publisher) VALUES (?, ?)", (title, book_publisher))
+        global book_id 
+        book_id = cursor.lastrowid
+        conn.commit()
+        return book_id  # Return the book_id
+    except sqlite3.Error as e:
+        print("SQLite error: ", e)
+        return None  # Return None in case of an error
+    finally:
+        conn.close()
+
+def insert_into_book_author(book_author):
+    db_path = r'C:\Users\HP\Documents\GitHub\sqlite-tools-win32-x86-3430100\project3.db'
+    conn = sqlite3.connect(db_path)
+    try:
+        cursor = conn.cursor()
+        cursor.execute("INSERT INTO BOOK_Author (Author_name) VALUES (?)", (book_author, ))
+        conn.commit()
+        
+    except sqlite3.Error as e:
+        print("SQLite error: ", e)
+        return None
+    finally:
+        conn.close()
+
+def insert_into_book_copies():
+    global book_id_global  # Access the global variable
+    db_path = r'C:\Users\HP\Documents\GitHub\sqlite-tools-win32-x86-3430100\project3.db'
+    conn = sqlite3.connect(db_path)
+    try:
+        cursor = conn.cursor()
+        cursor.execute("SELECT Branch_id FROM LIBRARY_BRANCH")
+        branches = cursor.fetchall()
+
+        for branch in branches:
+            branch_id = branch[0]
+            cursor.execute("INSERT INTO BOOK_COPIES (Book_id, Branch_id, No_of_copies) VALUES (?, ?, 5)", (book_id, branch_id))
+
+        conn.commit()
+    except sqlite3.Error as e:
+        print("SQLite error: ", e)
+    finally:
+        conn.close()
+
+
+
+        
 
 def create_book_copies_trigger():
     db_path = r'C:\Users\HP\Documents\GitHub\sqlite-tools-win32-x86-3430100\project3.db'

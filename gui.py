@@ -159,7 +159,7 @@ show_copies_button.grid(row=9, column=1, columnspan=2, pady=5)
 
 query2_frame = create_query_tab("Query 2")
 
-text = tk.Label(query2_frame, text="Query 2: Add Borrower",font=("Times New Roman", 13))
+text = tk.Label(query2_frame, text="Query 2: Allow User To Add A New Borrower",font=("Times New Roman", 13))
 text.grid(row=0, column=2, sticky='W')
 
 def clear_entries():
@@ -224,6 +224,59 @@ add_new_borrower_button.grid(row=6, column=1, columnspan=2, pady=5)
 show_new_borrower_button = tk.Button(
     query2_frame, text="Show Borrower ", command=show_new_borrower)
 show_new_borrower_button.grid(row=7, column=1, columnspan=2, pady=5)
+
+
+
+
+
+
+query3_frame = create_query_tab("Query 3")
+
+
+def populate_book_publisher():
+    book_publisher = project3.get_all_book_publisher()
+    book_publisher_combobox['values'] = book_publisher
+
+def add_new_book():
+    book_title = book_title_entry.get()
+    book_publisher = book_publisher_combobox.get()
+    thebook_author = author_name_entry.get()
+
+
+    project3.insert_into_book(book_title, book_publisher)
+    project3.insert_into_book_author(thebook_author)
+    project3.insert_into_book_copies()
+   
+
+
+text = tk.Label(query3_frame, text='''Query 3: Allow User To Add a New Book With Publisher And Author Information 
+                                                To All 5 Branches With 5 Copies For Each Branch. ''',font=("Times New Roman", 13))
+text.grid(row=0, column=2, sticky='W')
+
+
+tk.Label(query3_frame, text="Book Title:").grid(row=1, column=1, sticky='W')
+book_title_entry = tk.Entry(query3_frame)
+book_title_entry.grid(row=1, column=2, pady=5, padx=5, sticky='EW')
+
+
+tk.Label(query3_frame, text="Book Publisher:").grid(row=2, column=1, sticky='W')
+book_publisher_combobox = ttk.Combobox(query3_frame)
+book_publisher_combobox.grid(row=2, column=2, pady=5, sticky ='EW')
+populate_book_publisher()
+
+
+tk.Label(query3_frame, text="Author Name:").grid(row=3, column=1, sticky='W')
+author_name_entry = tk.Entry(query3_frame)
+author_name_entry.grid(row=3, column=2, pady=5, padx=5, sticky='EW')
+
+
+add_new_book_button = tk.Button(
+    query3_frame, text="Add Book ", command=add_new_book)
+add_new_book_button.grid(row=6, column=1, columnspan=2, pady=5)
+
+show_new_book_button = tk.Button(
+    query3_frame, text="Show Newly Added Book ", command=show_new_borrower)
+show_new_book_button.grid(row=7, column=1, columnspan=2, pady=5)
 
 
 notebook.pack(expand=True, fill='both')

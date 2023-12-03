@@ -1,0 +1,47 @@
+ALTER TABLE BOOK_LOANS
+ADD Late INT;
+
+UPDATE BOOK_LOANS
+   SET Late = CASE WHEN julianday(BOOK_LOANS.Returned_date) - julianday(BOOK_LOANS.Date_out) > julianday(BOOK_LOANS.Due_date) - julianday(BOOK_LOANS.Date_out) THEN 1 ELSE 0 END;
+   
+ALTER TABLE LIBRARY_BRANCH
+ADD LateFee INT;
+
+
+
+UPDATE LIBRARY_BRANCH
+SET Latefee = CASE WHEN LIBRARY_BRANCH.Branch_Name = 'Main Branch' THEN 50
+                   WHEN LIBRARY_BRANCH.Branch_Name = 'West Branch' THEN 30 
+                   WHEN LIBRARY_BRANCH.Branch_Name = 'East Branch' THEN 40 
+                   WHEN LIBRARY_BRANCH.Branch_Name = 'North Branch' THEN 10
+                   WHEN LIBRARY_BRANCH.Branch_Name = 'UTA Branch' THEN 30 
+                   ELSE 0 END;
+
+CREATE VIEW [vBookLoanInfo] AS
+SELECT 
+    BOOK_LOANS.Book_id,
+    BOOK_LOANS.Card_No,
+    BOOK_LOANS.Date_out,
+    BOOK_LOANS.Due_date,
+    BOOK_LOANS.Returned_date,
+    SUM(julianday(BOOK_LOANS.Returned_date) - julianday(BOOK_LOANS.Date_out)) AS TotalDaysLoanedOut,
+    BOOK.Title,
+    SUM(CASE 
+            WHEN julianday(BOOK_LOANS.Returned_date) > julianday(BOOK_LOANS.Due_date) 
+            THEN julianday(BOOK_LOANS.Returned_date) - julianday(BOOK_LOANS.Due_date) 
+            ELSE 0
+        END) AS TotalDaysReturnedLate,
+    BOOK_LOANS.Branch_id,
+    SUM(CASE
+            WHEN julianday(BOOK_LOANS.Returned_date) > julianday(BOOK_LOANS.Due_date)
+            THEN LIBRARY_BRANCH.LateFee * (julianday(BOOK_LOANS.Returned_date) - julianday(BOOK_LOANS.Due_date))
+            WHEN julianday(BOOK_LOANS.Returned_date) < julianday(BOOK_LOANS.Due_date)
+            THEN 0
+            ELSE 0
+            END) AS LateFeeBalance            
+FROM 
+    BOOK_LOANS
+JOIN LIBRARY_BRANCH ON LIBRARY_BRANCH.Branch_ID = BOOK_LOANS.Branch_id
+JOIN BOOK ON BOOK.Book_id = BOOK_LOANS.Book_id
+GROUP BY 
+    BOOK_LOANS.Book_id;
