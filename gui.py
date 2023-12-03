@@ -90,38 +90,33 @@ def show_book_copies():
     scrollbar.pack(side='right', fill='y')
 
 def show_book_loans_per_branch(book_title):
-    #Display book loans per branch from Loans_per_branch(book_title):
+    # Display book loans per branch from Loans_per_branch(book_title):
     print("Book Title:", book_title)
     popup = tk.Toplevel(root)
     popup.title("Book Loans per Branch")
 
-    # Create a Treeview in the pop-up window``
-    popup_treeview = ttk.Treeview(popup, columns=('Branch_id','Branch_Name','Copies_loaned_out'), show='headings')
+    # the Loans_per_branch() function should get the book title from the title_entry box
+    book_loans_perbranch = project3.Loans_per_branch(book_title)
+
+    # Create a Treeview in the pop-up window
+    popup_treeview = ttk.Treeview(popup, columns=('Branch_id', 'Branch_Name', 'Copies_loaned_out'), show='headings')
     popup_treeview.pack(fill='both', expand=True)
 
     if not book_loans_perbranch:
-        popup_treeview.destroy()
         messagebox.showinfo("Book Not Available", "This book is not available.")
+        popup.destroy()  # Close the popup window
         return
 
-    #the Loans_per_branch() funtion should get the book title from the title_entry box
-    book_loans_perbranch = project3.Loans_per_branch(book_title)
-
-
-    
-    
-    for col in ('Branch_id','Branch_Name','Copies_loaned_out'):
+    for col in ('Branch_id', 'Branch_Name', 'Copies_loaned_out'):
         popup_treeview.heading(col, text=col)
         # Adjust width as needed
         popup_treeview.column(col, anchor='w', width=120)
-    
+
     # Populate the Treeview with new data
     for loan in book_loans_perbranch:
-            popup_treeview.insert('', 'end', values=loan)
-    
-    
-    scrollbar = ttk.Scrollbar(popup, orient='vertical',
-                              command=popup_treeview.yview)
+        popup_treeview.insert('', 'end', values=loan)
+
+    scrollbar = ttk.Scrollbar(popup, orient='vertical', command=popup_treeview.yview)
     popup_treeview.configure(yscroll=scrollbar.set)
     scrollbar.pack(side='right', fill='y')
 
