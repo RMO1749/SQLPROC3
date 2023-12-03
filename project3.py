@@ -5,7 +5,7 @@ def connect_to_database(db_path):
     return conn
 
 def get_book_id_by_title(book_title):
-    db_path = r'C:\Users\HP\Documents\GitHub\sqlite-tools-win32-x86-3430100\project3.db'
+    db_path = r'C:\Users\Vidara\Desktop\SQL GUI\SQLPROC3\project3.db'
     conn = connect_to_database(db_path)
     try:
         cursor = conn.cursor()
@@ -20,7 +20,7 @@ def get_book_id_by_title(book_title):
 
 
 def get_branchid_by_bookid(book_id):
-    db_path = r'C:\Users\HP\Documents\GitHub\sqlite-tools-win32-x86-3430100\project3.db'
+    db_path = r'C:\Users\Vidara\Desktop\SQL GUI\SQLPROC3\project3.db'
     conn = connect_to_database(db_path)
     try:
         cursor = conn.cursor()
@@ -34,7 +34,7 @@ def get_branchid_by_bookid(book_id):
         conn.close()
 
 def get_book_loans_with_column_names():
-    db_path = r'C:\Users\HP\Documents\GitHub\sqlite-tools-win32-x86-3430100\project3.db'
+    db_path = r'C:\Users\Vidara\Desktop\SQL GUI\SQLPROC3\project3.db'
     conn = connect_to_database(db_path)
     try:
         cursor = conn.cursor()
@@ -54,7 +54,7 @@ def get_book_loans_with_column_names():
         conn.close()
 
 def get_book_copies_with_column_names():
-    db_path = r'C:\Users\HP\Documents\GitHub\sqlite-tools-win32-x86-3430100\project3.db'
+    db_path = r'C:\Users\Vidara\Desktop\SQL GUI\SQLPROC3\project3.db'
     conn = connect_to_database(db_path)
     try:
         cursor = conn.cursor()
@@ -74,7 +74,7 @@ def get_book_copies_with_column_names():
         conn.close()
 
 def get_all_book_titles():
-    db_path = r'C:\Users\HP\Documents\GitHub\sqlite-tools-win32-x86-3430100\project3.db'
+    db_path = r'C:\Users\Vidara\Desktop\SQL GUI\SQLPROC3\project3.db'
     conn = connect_to_database(db_path)
     try:
         cursor = conn.cursor()
@@ -88,7 +88,7 @@ def get_all_book_titles():
         conn.close()
 
 def get_all_cardNo():
-    db_path = r'C:\Users\HP\Documents\GitHub\sqlite-tools-win32-x86-3430100\project3.db'
+    db_path = r'C:\Users\Vidara\Desktop\SQL GUI\SQLPROC3\project3.db'
     conn = connect_to_database(db_path)
     try:
         cursor = conn.cursor()
@@ -102,7 +102,7 @@ def get_all_cardNo():
         conn.close()
 
 def insert_book_loan(book_id, branch_id, card_number, date_out, due_date, returned_date):
-    db_path = r'C:\Users\HP\Documents\GitHub\sqlite-tools-win32-x86-3430100\project3.db'
+    db_path = r'C:\Users\Vidara\Desktop\SQL GUI\SQLPROC3\project3.db'
     conn = connect_to_database(db_path)
     try:
         cursor = conn.cursor()
@@ -122,7 +122,7 @@ def insert_book_loan(book_id, branch_id, card_number, date_out, due_date, return
         conn.close()
 
 def create_book_copies_trigger():
-    db_path = r'C:\Users\HP\Documents\GitHub\sqlite-tools-win32-x86-3430100\project3.db'
+    db_path = r'C:\Users\Vidara\Desktop\SQL GUI\SQLPROC3\project3.db'
     conn = connect_to_database(db_path)
     try:
         cursor = conn.cursor()
@@ -137,6 +137,24 @@ def create_book_copies_trigger():
             END;
             ''')
         conn.commit()
+    except sqlite3.Error as e:
+        print("SQLite error: ", e)
+    finally:
+        conn.close()
+
+#Given a book title list the number of copies loaned out per branch.
+def Loans_per_branch(book_title):
+    db_path = r'C:\Users\Vidara\Desktop\SQL GUI\SQLPROC3\project3.db'
+    conn = connect_to_database(db_path)
+    try:
+        cursor = conn.cursor()
+        cursor.execute('''SELECT BOOK_LOANS.Branch_id, LIBRARY_BRANCH.Branch_Name, COUNT(*) AS Copies_loaned_out
+                          FROM BOOK_LOANS
+                          INNER JOIN LIBRARY_BRANCH ON BOOK_LOANS.Branch_id = LIBRARY_BRANCH.Branch_id
+                          WHERE BOOK_LOANS.Book_id = (SELECT Book_id FROM Book WHERE title = ?)
+                          GROUP BY BOOK_LOANS.Branch_id, LIBRARY_BRANCH.Branch_Name''', (book_title,))
+        result = cursor.fetchall()
+        return result
     except sqlite3.Error as e:
         print("SQLite error: ", e)
     finally:

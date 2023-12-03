@@ -2,7 +2,9 @@ import tkinter as tk
 from tkinter import ttk
 import project3
 from tkcalendar import DateEntry
+from tkinter import messagebox
 
+import project3
 
 
 # Function to handle book checkout
@@ -87,6 +89,41 @@ def show_book_copies():
     popup_treeview.configure(yscroll=scrollbar.set)
     scrollbar.pack(side='right', fill='y')
 
+def show_book_loans_per_branch(book_title):
+    #Display book loans per branch from Loans_per_branch(book_title):
+    print("Book Title:", book_title)
+    popup = tk.Toplevel(root)
+    popup.title("Book Loans per Branch")
+
+    # Create a Treeview in the pop-up window``
+    popup_treeview = ttk.Treeview(popup, columns=('Branch_id','Branch_Name','Copies_loaned_out'), show='headings')
+    popup_treeview.pack(fill='both', expand=True)
+
+    if not book_loans_perbranch:
+        popup_treeview.destroy()
+        messagebox.showinfo("Book Not Available", "This book is not available.")
+        return
+
+    #the Loans_per_branch() funtion should get the book title from the title_entry box
+    book_loans_perbranch = project3.Loans_per_branch(book_title)
+
+
+    
+    
+    for col in ('Branch_id','Branch_Name','Copies_loaned_out'):
+        popup_treeview.heading(col, text=col)
+        # Adjust width as needed
+        popup_treeview.column(col, anchor='w', width=120)
+    
+    # Populate the Treeview with new data
+    for loan in book_loans_perbranch:
+            popup_treeview.insert('', 'end', values=loan)
+    
+    
+    scrollbar = ttk.Scrollbar(popup, orient='vertical',
+                              command=popup_treeview.yview)
+    popup_treeview.configure(yscroll=scrollbar.set)
+    scrollbar.pack(side='right', fill='y')
 
 # Main window
 root = tk.Tk()
@@ -224,6 +261,22 @@ add_new_borrower_button.grid(row=6, column=1, columnspan=2, pady=5)
 show_new_borrower_button = tk.Button(
     query2_frame, text="Show Borrower ", command=show_new_borrower)
 show_new_borrower_button.grid(row=7, column=1, columnspan=2, pady=5)
+
+
+
+query4_frame = create_query_tab("Query 4")
+text = tk.Label(query4_frame, text="Number number of copies loaned per branch by Title",font=("Times New Roman", 13))
+text.grid(row=0, column=2, sticky='W')
+
+#Text entry box to enter the book title
+tk.Label(query4_frame, text="Book Title:").grid(row=1, column=1, sticky='W')
+title_entry = tk.Entry(query4_frame)
+title_entry.grid(row=1, column=2, pady=5, padx=5, sticky='EW')
+#Submit button to submit the book title to show_book_loans function
+submit_button = tk.Button(query4_frame, text="Submit", command=lambda:show_book_loans_per_branch(title_entry.get()))
+submit_button.grid(row=2, column=1, columnspan=2, pady=5)
+
+
 
 
 notebook.pack(expand=True, fill='both')
