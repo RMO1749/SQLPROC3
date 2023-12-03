@@ -415,6 +415,31 @@ def show_book_info(bookidOrbookTitle, borrower_Id):
     popup_treeview.configure(yscroll=scrollbar.set)
     scrollbar.pack(side='right', fill='y') 
 
+def show_book_info_no_criteria():
+    popup = tk.Toplevel(root)
+    popup.title("Book Info No Criteria")
+
+    # Create a Treeview in the pop-up window
+    popup_treeview = ttk.Treeview(popup, columns=('temp',), show='headings')
+    popup_treeview.pack(fill='both', expand=True)
+
+    column_names, books = project3.get_bookinfo_no_criteria_with_column_names()
+    popup_treeview['columns'] = column_names
+
+    for col in column_names:
+        popup_treeview.heading(col, text=col)
+        
+        popup_treeview.column(col, anchor='w', width=120)
+
+    # Populate the Treeview with new data
+    for book in books:
+        popup_treeview.insert('', 'end', values=book)
+
+    # Add a scrollbar
+    scrollbar = ttk.Scrollbar(popup, orient='vertical',
+                              command=popup_treeview.yview)
+    popup_treeview.configure(yscroll=scrollbar.set)
+    scrollbar.pack(side='right', fill='y')   
 
 text = tk.Label(query6b_frame, text='''Query 6b: List Book Information In The View.''',font=("Times New Roman", 13))
 text.grid(row=0, column=2, sticky='W')
@@ -433,7 +458,7 @@ submit_button = tk.Button(query6b_frame, text="Submit", command=lambda:show_book
 submit_button.grid(row=3, column=1, columnspan=2, pady=5)
 
 show_book_info_button = tk.Button(
-    query6b_frame, text="View Book Info ", command=show_new_book)
+    query6b_frame, text="View Book Info ", command=show_book_info_no_criteria)
 show_book_info_button.grid(row=7, column=1, columnspan=2, pady=5)
 
 
