@@ -184,8 +184,6 @@ def insert_into_book_copies():
     finally:
         conn.close()
 
-
-
         
 
 def create_book_copies_trigger():
@@ -243,3 +241,126 @@ def get_borrower_with_column_names():
     finally:
         conn.close()
 
+def get_book_with_column_names():
+    db_path = r'C:\Users\HP\Documents\GitHub\sqlite-tools-win32-x86-3430100\project3.db'
+    conn = connect_to_database(db_path)
+    try:
+        cursor = conn.cursor()
+        # Execute a query to get column names
+        cursor.execute('''SELECT B.book_id,
+                                 B.title,
+                                 B.book_publisher,
+                                 BA.author_name,
+                                 BC.branch_id,
+                                 BC.no_of_copies
+                                 FROM BOOK AS B
+                                 JOIN BOOK_COPIES AS BC ON BC.book_id = B.book_id
+                                 JOIN BOOK_AUTHOR AS BA ON BA.book_Id = B.book_id
+                                 LIMIT 0;''')
+        column_names = [description[0] for description in cursor.description]
+
+        # Execute a query to get all data
+        cursor.execute(''' SELECT B.book_id,
+                                 B.title,
+                                 B.book_publisher,
+                                 BA.author_name,
+                                 BC.branch_id,
+                                 BC.no_of_copies
+                                 FROM BOOK AS B
+                                 JOIN BOOK_COPIES AS BC ON BC.book_id = B.book_id
+                                 JOIN BOOK_AUTHOR AS BA ON BA.book_Id = B.book_id; ''')
+        book = cursor.fetchall()
+
+        return column_names, book
+    except sqlite3.Error as e:
+        print("SQLite error: ", e)
+        return [], []  # Return empty lists in case of error
+    finally:
+        conn.close()
+
+def Loans_per_branch(book_title):
+    db_path = r'C:\Users\HP\Documents\GitHub\sqlite-tools-win32-x86-3430100\project3.db'
+    conn = connect_to_database(db_path)
+    try:
+        cursor = conn.cursor()
+        cursor.execute('''SELECT BOOK_LOANS.Branch_id, LIBRARY_BRANCH.Branch_Name, COUNT(*) AS Copies_loaned_out
+                          FROM BOOK_LOANS
+                          INNER JOIN LIBRARY_BRANCH ON BOOK_LOANS.Branch_id = LIBRARY_BRANCH.Branch_id
+                          WHERE BOOK_LOANS.Book_id = (SELECT Book_id FROM Book WHERE title = ?)
+                          GROUP BY BOOK_LOANS.Branch_id, LIBRARY_BRANCH.Branch_Name''', (book_title,))
+        result = cursor.fetchall()
+        return result
+    except sqlite3.Error as e:
+        print("SQLite error: ", e)
+    finally:
+        conn.close()
+
+def get_book_info_with_column_names(bookidOrbookTitle, borrower_id):
+    db_path = r'C:\Users\HP\Documents\GitHub\sqlite-tools-win32-x86-3430100\project3.db'
+    conn = connect_to_database(db_path)
+    try:
+        cursor = conn.cursor()
+        # Execute a query to get column names
+        
+
+        # Execute a query to get all data
+        cursor.execute('''SELECT *,
+                          CASE WHEN LateFeeBalance = 0 THEN 'NON APPLICABLE' 
+                          ELSE '$' || printf("%.2f", LateFeeBalance) 
+                          END AS LateFeeBalance
+                          FROM vBookLoanInfo
+                          WHERE Card_No = ? ''', (borrower_id,))
+        borrower_info = cursor.fetchall()
+
+        cursor.execute('''SELECT *,
+                          CASE WHEN LateFeeBalance = 0 THEN 'NON APPLICABLE' 
+                          ELSE '$' || printf("%.2f", LateFeeBalance) 
+                          END AS LateFeeBalance
+                          FROM vBookLoanInfo
+                          WHERE Title LIKE '%' || ? || '%'
+                          OR Book_id = ? 
+                           ''', (bookidOrbookTitle, bookidOrbookTitle ))
+        bookidOrbookTitle_info = cursor.fetchall()
+
+        cursor.execute('''SELECT *
+                          FROM vBookLoanInfo
+                          WHERE Card_No = ?
+                          LIMIT 0;''', (borrower_id,))
+        column_names = [description[0] for description in cursor.description]
+        
+
+        return column_names, borrower_info, bookidOrbookTitle_info
+    except sqlite3.Error as e:
+        print("SQLite error: ", e)
+        return [], []  # Return empty lists in case of error
+    finally:
+        conn.close()
+
+
+def get_all_borrowerInfo():
+    db_path = r'C:\Users\HP\Documents\GitHub\sqlite-tools-win32-x86-3430100\project3.db'
+    conn = connect_to_database(db_path)
+    try:
+        cursor = conn.cursor()
+        cursor.execute("SELECT Card_no FROM vBookLoanInfo")
+        cardNumbers = cursor.fetchall()
+        return [cardNo[0] for cardNo in cardNumbers]  
+    except sqlite3.Error as e:
+        print("SQLite error: ", e)
+        return []  
+    finally:
+        conn.close()
+
+def get_book_titles():
+    db_path = r'C:\Users\HP\Documents\GitHub\sqlite-tools-win32-x86-3430100\project3.db'
+    conn = connect_to_database(db_path)
+    try:
+        cursor = conn.cursor()
+        cursor.execute("SELECT title FROM vBookLoanInfo")
+        books = cursor.fetchall()
+        return [book[0] for book in books]  
+    except sqlite3.Error as e:
+        print("SQLite error: ", e)
+        return []  # Return an empty list in case of error
+    finally:
+        conn.close()

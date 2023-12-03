@@ -2,6 +2,7 @@ import tkinter as tk
 from tkinter import ttk
 import project3
 from tkcalendar import DateEntry
+from tkinter import messagebox
 
 
 
@@ -103,7 +104,7 @@ def create_query_tab(text):
 
 query_frame = create_query_tab("Query 1")
 
-text = tk.Label(query_frame, text="Query 1: Allow user to check out a book",font=("Times New Roman", 14))
+text = tk.Label(query_frame, text="Query 1: Allow user to check out a book",font=("Times New Roman", 13))
 text.grid(row=0, column=1, sticky='W')
                           
 # Card Number entry
@@ -232,6 +233,9 @@ show_new_borrower_button.grid(row=7, column=1, columnspan=2, pady=5)
 
 query3_frame = create_query_tab("Query 3")
 
+def populate_borrower_info():
+    borrower_info = project3.get_all_borrowerInfo()
+    borrowerID_combobox['values'] = borrower_info
 
 def populate_book_publisher():
     book_publisher = project3.get_all_book_publisher()
@@ -246,7 +250,32 @@ def add_new_book():
     project3.insert_into_book(book_title, book_publisher)
     project3.insert_into_book_author(thebook_author)
     project3.insert_into_book_copies()
-   
+
+def show_new_book():
+    popup = tk.Toplevel(root)
+    popup.title("Book")
+
+    # Create a Treeview in the pop-up window
+    popup_treeview = ttk.Treeview(popup, columns=('temp',), show='headings')
+    popup_treeview.pack(fill='both', expand=True)
+
+    column_names, borrowers = project3.get_book_with_column_names()
+    popup_treeview['columns'] = column_names
+
+    for col in column_names:
+        popup_treeview.heading(col, text=col)
+        
+        popup_treeview.column(col, anchor='w', width=120)
+
+    # Populate the Treeview with new data
+    for borrower in borrowers:
+        popup_treeview.insert('', 'end', values=borrower)
+
+    # Add a scrollbar
+    scrollbar = ttk.Scrollbar(popup, orient='vertical',
+                              command=popup_treeview.yview)
+    popup_treeview.configure(yscroll=scrollbar.set)
+    scrollbar.pack(side='right', fill='y')   
 
 
 text = tk.Label(query3_frame, text='''Query 3: Allow User To Add a New Book With Publisher And Author Information 
@@ -275,8 +304,137 @@ add_new_book_button = tk.Button(
 add_new_book_button.grid(row=6, column=1, columnspan=2, pady=5)
 
 show_new_book_button = tk.Button(
-    query3_frame, text="Show Newly Added Book ", command=show_new_borrower)
+    query3_frame, text="Show Newly Added Book ", command=show_new_book)
 show_new_book_button.grid(row=7, column=1, columnspan=2, pady=5)
+
+
+query4_frame = create_query_tab("Query 4")
+text = tk.Label(query4_frame, text="Number number of copies loaned per branch by Title",font=("Times New Roman", 13))
+text.grid(row=0, column=2, sticky='W')
+
+
+def show_book_loans_per_branch(book_title):
+    # Display book loans per branch from Loans_per_branch(book_title):
+    print("Book Title:", book_title)
+    popup = tk.Toplevel(root)
+    popup.title("Book Loans per Branch")
+
+    # the Loans_per_branch() function should get the book title from the title_entry box
+    book_loans_perbranch = project3.Loans_per_branch(book_title)
+
+    # Create a Treeview in the pop-up window
+    popup_treeview = ttk.Treeview(popup, columns=('Branch_id', 'Branch_Name', 'Copies_loaned_out'), show='headings')
+    popup_treeview.pack(fill='both', expand=True)
+
+    if not book_loans_perbranch:
+        messagebox.showinfo("Book Not Available", "This book is not available.")
+        popup.destroy()  # Close the popup window
+        return
+
+    for col in ('Branch_id', 'Branch_Name', 'Copies_loaned_out'):
+        popup_treeview.heading(col, text=col)
+        # Adjust width as needed
+        popup_treeview.column(col, anchor='w', width=120)
+
+    # Populate the Treeview with new data
+    for loan in book_loans_perbranch:
+        popup_treeview.insert('', 'end', values=loan)
+
+    scrollbar = ttk.Scrollbar(popup, orient='vertical', command=popup_treeview.yview)
+    popup_treeview.configure(yscroll=scrollbar.set)
+    scrollbar.pack(side='right', fill='y')
+
+#Text entry box to enter the book title
+tk.Label(query4_frame, text="Book Title:").grid(row=1, column=1, sticky='W')
+title_entry = tk.Entry(query4_frame)
+title_entry.grid(row=1, column=2, pady=5, padx=5, sticky='EW')
+
+#Submit button to submit the book title to show_book_loans function
+submit_button = tk.Button(query4_frame, text="Submit", command=lambda:show_book_loans_per_branch(title_entry.get()))
+submit_button.grid(row=2, column=1, columnspan=2, pady=5)
+
+
+
+
+
+#List for every borrower the ID, name, and if there is any lateFee balance. The user has the
+#right to search either by a borrower ID, name, part of the name, or to run the query with no
+#filters/criteria.
+query6a_frame = create_query_tab("Query 6a")
+text = tk.Label(query6a_frame, text="Late Fees",font=("Times New Roman", 13))
+text.grid(row=0, column=2, sticky='W')
+
+#bottons to chose filter catergory 
+tk.Label(query6a_frame, text="Filter by:").grid(row=2, column=1, sticky='W')
+filter_combobox = ttk.Combobox(query6a_frame)
+filter_combobox.grid(row=2, column=2, pady=1,padx=8)
+filter_combobox['values'] = ['Borrower ID', 'Name', 'Part of Name', 'No Filter']
+filter_combobox.current(0)
+
+#Text entry box to give input dpending on the filer
+tk.Label(query6a_frame, text="Input:").grid(row=1, column=1, sticky='W')
+input_entry = tk.Entry(query6a_frame)
+input_entry.grid(row=1, column=2, pady=5, padx=5, sticky='EW')
+#Submit button to submit the filter and input to show_late_fees function
+submit_button = tk.Button(query6a_frame, text="Submit", command=lambda:show_late_fees(filter_combobox.get(), input_entry.get()))
+submit_button.grid(row=3, column=1, columnspan=2, pady=5)
+
+
+query6b_frame = create_query_tab("Query 6b")
+
+def populate_thebook_titles():
+    thebook_titles = project3.get_book_titles()
+    bookidOrbookTitle_combobox['values'] = thebook_titles
+
+def show_book_info(bookidOrbookTitle, borrower_Id):
+    popup = tk.Toplevel(root)
+    popup.title("Book Info")
+
+    # Create a Treeview in the pop-up window
+    popup_treeview = ttk.Treeview(popup, columns=('temp',), show='headings')
+    popup_treeview.pack(fill='both', expand=True)
+
+    column_names, book_infos, bookidOrbookTitle_infos = project3.get_book_info_with_column_names(bookidOrbookTitle, borrower_Id)
+    popup_treeview['columns'] = column_names
+
+    for col in column_names:
+        popup_treeview.heading(col, text=col)
+        
+        popup_treeview.column(col, anchor='w', width=120)
+
+    # Populate the Treeview with new data
+    for book_info in book_infos:
+        popup_treeview.insert('', 'end', values=book_info)
+
+    for bookidOrbookTitle_info in bookidOrbookTitle_infos:
+        popup_treeview.insert('', 'end', values=bookidOrbookTitle_info)
+
+    # Add a scrollbar
+    scrollbar = ttk.Scrollbar(popup, orient='vertical',
+                              command=popup_treeview.yview)
+    popup_treeview.configure(yscroll=scrollbar.set)
+    scrollbar.pack(side='right', fill='y') 
+
+
+text = tk.Label(query6b_frame, text='''Query 6b: List Book Information In The View.''',font=("Times New Roman", 13))
+text.grid(row=0, column=2, sticky='W')
+
+tk.Label(query6b_frame, text="Borrower ID:").grid(row=1, column=0, sticky='W')
+borrowerID_combobox = ttk.Combobox(query6b_frame)
+borrowerID_combobox.grid(row=1, column=2, pady=5)
+populate_borrower_info()
+
+tk.Label(query6b_frame, text="Enter BookID or Title :").grid(row=2, column=0, sticky='W')
+bookidOrbookTitle_combobox = ttk.Combobox(query6b_frame)
+bookidOrbookTitle_combobox.grid(row=2, column=2, pady=5, padx=5, sticky='EW')
+populate_thebook_titles()
+
+submit_button = tk.Button(query6b_frame, text="Submit", command=lambda:show_book_info(bookidOrbookTitle_combobox.get(), borrowerID_combobox.get()))
+submit_button.grid(row=3, column=1, columnspan=2, pady=5)
+
+show_book_info_button = tk.Button(
+    query6b_frame, text="View Book Info ", command=show_new_book)
+show_book_info_button.grid(row=7, column=1, columnspan=2, pady=5)
 
 
 notebook.pack(expand=True, fill='both')
