@@ -272,6 +272,27 @@ submit_button = tk.Button(query4_frame, text="Submit", command=lambda:show_book_
 submit_button.grid(row=2, column=1, columnspan=2, pady=5)
 
 
+#List for every borrower the ID, name, and if there is any lateFee balance. The user has the
+#right to search either by a borrower ID, name, part of the name, or to run the query with no
+#filters/criteria.
+query6_frame = create_query_tab("Query 6")
+text = tk.Label(query6_frame, text="Late Fees",font=("Times New Roman", 13))
+text.grid(row=0, column=2, sticky='W')
+#bottons to chose filter catergory 
+tk.Label(query6_frame, text="Filter by:").grid(row=2, column=1, sticky='W')
+filter_combobox = ttk.Combobox(query6_frame)
+filter_combobox.grid(row=2, column=2, pady=1,padx=8)
+filter_combobox['values'] = ['Borrower ID', 'Name', 'Part of Name', 'No Filter']
+filter_combobox.current(0)
+#Text entry box to give input dpending on the filer
+tk.Label(query6_frame, text="Input:").grid(row=1, column=1, sticky='W')
+input_entry = tk.Entry(query6_frame)
+input_entry.grid(row=1, column=2, pady=5, padx=5, sticky='EW')
+#Submit button to submit the filter and input to show_late_fees function
+submit_button = tk.Button(query6_frame, text="Submit", command=lambda:show_late_fees(filter_combobox.get(), input_entry.get()))
+submit_button.grid(row=3, column=1, columnspan=2, pady=5)
+
+
 
 
 notebook.pack(expand=True, fill='both')
