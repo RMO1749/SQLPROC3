@@ -24,12 +24,13 @@ def checkout_book():
     else:
         print("Book Title or Branch ID Not Found!")
 
-
+# Function for Title Dropdown Menu  
 def populate_book_titles():
     book_titles = project3.get_all_book_titles()
     book_title_combobox['values'] = book_titles
 
 
+# Function for Borrower ID/CardNo Dropdown Menu
 def populate_card_No():
     cardNo = project3.get_all_cardNo()
     card_number_combobox['values'] = cardNo
@@ -48,14 +49,12 @@ def show_book_loans():
 
     for col in column_names:
         popup_treeview.heading(col, text=col)
-        # Adjust width as needed
         popup_treeview.column(col, anchor='w', width=120)
 
-    # Populate the Treeview with new data
     for loan in book_loans:
         popup_treeview.insert('', 'end', values=loan)
 
-    # Add a scrollbar
+
     scrollbar = ttk.Scrollbar(popup, orient='vertical',
                               command=popup_treeview.yview)
     popup_treeview.configure(yscroll=scrollbar.set)
@@ -66,7 +65,6 @@ def show_book_copies():
     popup = tk.Toplevel(root)
     popup.title("Book Copies")
 
-    # Create a Treeview in the pop-up window
     popup_treeview = ttk.Treeview(popup, columns=('temp',), show='headings')
     popup_treeview.pack(fill='both', expand=True)
 
@@ -75,18 +73,125 @@ def show_book_copies():
 
     for col in column_names:
         popup_treeview.heading(col, text=col)
-        # Adjust width as needed
         popup_treeview.column(col, anchor='w', width=120)
 
-    # Populate the Treeview with new data
     for loan in book_copies:
         popup_treeview.insert('', 'end', values=loan)
 
-    # Add a scrollbar
     scrollbar = ttk.Scrollbar(popup, orient='vertical',
                               command=popup_treeview.yview)
     popup_treeview.configure(yscroll=scrollbar.set)
     scrollbar.pack(side='right', fill='y')
+
+def show_book_loans_per_branch(book_title):
+    # Display book loans per branch from Loans_per_branch(book_title):
+    print("Book Title:", book_title)
+    popup = tk.Toplevel(root)
+    popup.title("Book Loans per Branch")
+
+    # the Loans_per_branch() function should get the book title from the title_entry box
+    book_loans_perbranch = project3.Loans_per_branch(book_title)
+
+    popup_treeview = ttk.Treeview(popup, columns=('Branch_id', 'Branch_Name', 'Copies_loaned_out'), show='headings')
+    popup_treeview.pack(fill='both', expand=True)
+
+    if not book_loans_perbranch:
+        messagebox.showinfo("Book Not Available", "This book is not available.")
+        popup.destroy()  # Close the popup window
+        return
+
+    for col in ('Branch_id', 'Branch_Name', 'Copies_loaned_out'):
+        popup_treeview.heading(col, text=col)
+        # Adjust width as needed
+        popup_treeview.column(col, anchor='w', width=120)
+
+    for loan in book_loans_perbranch:
+        popup_treeview.insert('', 'end', values=loan)
+
+    scrollbar = ttk.Scrollbar(popup, orient='vertical', command=popup_treeview.yview)
+    popup_treeview.configure(yscroll=scrollbar.set)
+    scrollbar.pack(side='right', fill='y')
+
+def show_late_fees_name(Name):
+    # Display late fees by name from Late_fees_name(Name):
+    print("Name:", Name)
+    popup = tk.Toplevel(root)
+    popup.title("Late Fees by Name")
+
+    # the Late_fees_name() function should get the name from the input_entry box
+    late_fees_name = project3.Search_by_name(Name)
+
+    # Create a Treeview in the pop-up window
+    popup_treeview = ttk.Treeview(popup, columns=('Card_no', 'Name','Title','Late_Fees'), show='headings')
+    popup_treeview.pack(fill='both', expand=True)
+
+
+    for col in ('Card_no', 'Name','Title','Late_Fees'):
+        popup_treeview.heading(col, text=col)
+        # Adjust width as needed
+        popup_treeview.column(col, anchor='w', width=120)
+
+    # Populate the Treeview with new data
+    for loan in late_fees_name:
+        popup_treeview.insert('', 'end', values=loan)
+
+    scrollbar = ttk.Scrollbar(popup, orient='vertical', command=popup_treeview.yview)
+    popup_treeview.configure(yscroll=scrollbar.set)
+    scrollbar.pack(side='right', fill='y')
+
+def show_late_fees_id(Card_no):
+    # Display late fees by ID from Late_fees_id(Card_no):
+    print("Card_no:", Card_no)
+    popup = tk.Toplevel(root)
+    popup.title("Late Fees by ID")
+
+    # the Late_fees_id() function should get the ID from the input_entry box
+    late_fees_id = project3.Search_by_id(Card_no)
+
+    # Create a Treeview in the pop-up window
+    popup_treeview = ttk.Treeview(popup, columns=('Card_no', 'Name','Title','Late_Fees'), show='headings')
+    popup_treeview.pack(fill='both', expand=True)
+
+
+    for col in ('Card_no', 'Name','Title','Late_Fees'):
+        popup_treeview.heading(col, text=col)
+        # Adjust width as needed
+        popup_treeview.column(col, anchor='w', width=120)
+
+    # Populate the Treeview with new data
+    for loan in late_fees_id:
+        popup_treeview.insert('', 'end', values=loan)
+
+    scrollbar = ttk.Scrollbar(popup, orient='vertical', command=popup_treeview.yview)
+    popup_treeview.configure(yscroll=scrollbar.set)
+    scrollbar.pack(side='right', fill='y')
+
+def show_late_fees():
+    # Display all late fees from Late_fees():
+    popup = tk.Toplevel(root)
+    popup.title("Late Fees")
+
+    # the Late_fees() function should get the ID from the input_entry box
+    late_fees = project3.Search()
+
+    # Create a Treeview in the pop-up window
+    popup_treeview = ttk.Treeview(popup, columns=('Card_no', 'Name','Title','Late_Fees'), show='headings')
+    popup_treeview.pack(fill='both', expand=True)
+
+
+    for col in ('Card_no', 'Name','Title','Late_Fees'):
+        popup_treeview.heading(col, text=col)
+        popup_treeview.column(col, anchor='w', width=120)
+
+    # Populate the Treeview with new data
+    for loan in late_fees:
+        popup_treeview.insert('', 'end', values=loan)
+
+    scrollbar = ttk.Scrollbar(popup, orient='vertical', command=popup_treeview.yview)
+    popup_treeview.configure(yscroll=scrollbar.set)
+    scrollbar.pack(side='right', fill='y')
+
+
 
 
 # Main window
@@ -118,7 +223,6 @@ tk.Label(query_frame, text="Book Title:").grid(row=2, column=0, sticky='W')
 book_title_combobox = ttk.Combobox(query_frame)
 book_title_combobox.grid(row=2, column=2, pady=5)
 populate_book_titles()
-
 
 # Date Out entry
 tk.Label(query_frame, text="Date Out:").grid(row=3, column=0, sticky='W')
@@ -246,7 +350,6 @@ def add_new_book():
     book_publisher = book_publisher_combobox.get()
     thebook_author = author_name_entry.get()
 
-
     project3.insert_into_book(book_title, book_publisher)
     project3.insert_into_book_author(thebook_author)
     project3.insert_into_book_copies()
@@ -308,41 +411,13 @@ show_new_book_button = tk.Button(
 show_new_book_button.grid(row=7, column=1, columnspan=2, pady=5)
 
 
+
+
+
+
 query4_frame = create_query_tab("Query 4")
-text = tk.Label(query4_frame, text="Number number of copies loaned per branch by Title",font=("Times New Roman", 13))
+text = tk.Label(query4_frame, text="Copies Loaned per Branch by Book Title",font=("Times New Roman", 13))
 text.grid(row=0, column=2, sticky='W')
-
-
-def show_book_loans_per_branch(book_title):
-    # Display book loans per branch from Loans_per_branch(book_title):
-    print("Book Title:", book_title)
-    popup = tk.Toplevel(root)
-    popup.title("Book Loans per Branch")
-
-    # the Loans_per_branch() function should get the book title from the title_entry box
-    book_loans_perbranch = project3.Loans_per_branch(book_title)
-
-    # Create a Treeview in the pop-up window
-    popup_treeview = ttk.Treeview(popup, columns=('Branch_id', 'Branch_Name', 'Copies_loaned_out'), show='headings')
-    popup_treeview.pack(fill='both', expand=True)
-
-    if not book_loans_perbranch:
-        messagebox.showinfo("Book Not Available", "This book is not available.")
-        popup.destroy()  # Close the popup window
-        return
-
-    for col in ('Branch_id', 'Branch_Name', 'Copies_loaned_out'):
-        popup_treeview.heading(col, text=col)
-        # Adjust width as needed
-        popup_treeview.column(col, anchor='w', width=120)
-
-    # Populate the Treeview with new data
-    for loan in book_loans_perbranch:
-        popup_treeview.insert('', 'end', values=loan)
-
-    scrollbar = ttk.Scrollbar(popup, orient='vertical', command=popup_treeview.yview)
-    popup_treeview.configure(yscroll=scrollbar.set)
-    scrollbar.pack(side='right', fill='y')
 
 #Text entry box to enter the book title
 tk.Label(query4_frame, text="Book Title:").grid(row=1, column=1, sticky='W')
@@ -359,27 +434,35 @@ text.grid(row=0, column=2, sticky='W')
 
 
 
-#List for every borrower the ID, name, and if there is any lateFee balance. The user has the
-#right to search either by a borrower ID, name, part of the name, or to run the query with no
-#filters/criteria.
-query6a_frame = create_query_tab("Query 6a")
-text = tk.Label(query6a_frame, text="Late Fees",font=("Times New Roman", 13))
+
+query6_frame = create_query_tab("Query 6a")
+text = tk.Label(query6_frame, text="View Late fees",font=("Times New Roman", 13))
 text.grid(row=0, column=2, sticky='W')
 
-#bottons to chose filter catergory 
-tk.Label(query6a_frame, text="Filter by:").grid(row=2, column=1, sticky='W')
-filter_combobox = ttk.Combobox(query6a_frame)
+#buttons to choose filter category 
+tk.Label(query6_frame, text="Filter by:").grid(row=2, column=1, sticky='W')
+filter_combobox = ttk.Combobox(query6_frame)
 filter_combobox.grid(row=2, column=2, pady=1,padx=8)
-filter_combobox['values'] = ['Borrower ID', 'Name', 'Part of Name', 'No Filter']
+filter_combobox['values'] = ['No Filter','Borrower ID', 'Name']
 filter_combobox.current(0)
 
-#Text entry box to give input dpending on the filer
-tk.Label(query6a_frame, text="Input:").grid(row=1, column=1, sticky='W')
-input_entry = tk.Entry(query6a_frame)
+#Text entry box to give input depending on the filter
+tk.Label(query6_frame, text="Input:").grid(row=1, column=1, sticky='W')
+input_entry = tk.Entry(query6_frame)
 input_entry.grid(row=1, column=2, pady=5, padx=5, sticky='EW')
+
 #Submit button to submit the filter and input to show_late_fees function
-submit_button = tk.Button(query6a_frame, text="Submit", command=lambda:show_late_fees(filter_combobox.get(), input_entry.get()))
+submit_button = tk.Button(query6_frame, text="Submit")
 submit_button.grid(row=3, column=1, columnspan=2, pady=5)
+
+def submit_filter():
+    if filter_combobox.get() == 'Name':
+        show_late_fees_name(input_entry.get())
+    elif filter_combobox.get() == 'Borrower ID':
+        show_late_fees_id(input_entry.get())
+    elif filter_combobox.get() == 'No Filter':
+        show_late_fees()
+submit_button['command'] = submit_filter
 
 
 query6b_frame = create_query_tab("Query 6b")

@@ -11,7 +11,7 @@ def get_book_id_by_title(book_title):
         cursor = conn.cursor()
         query = "SELECT book_id FROM Book WHERE title = ?"
         cursor.execute(query, (book_title,))
-        result = cursor.fetchone()  # Assuming each book title is unique
+        result = cursor.fetchone() 
         return result[0] if result else None
     except sqlite3.Error as e:
         print("SQLite error: ", e)
@@ -26,7 +26,7 @@ def get_branchid_by_bookid(book_id):
         cursor = conn.cursor()
         query = "SELECT Branch_id FROM BOOK_COPIES WHERE Book_id = ?"
         cursor.execute(query, (book_id,))
-        result = cursor.fetchone()  # Assuming each book title is unique
+        result = cursor.fetchone() 
         return result[0] if result else None
     except sqlite3.Error as e:
         print("SQLite error: ", e)
@@ -38,11 +38,11 @@ def get_book_loans_with_column_names():
     conn = connect_to_database(db_path)
     try:
         cursor = conn.cursor()
-        # Execute a query to get column names
+        
         cursor.execute("SELECT * FROM BOOK_LOANS LIMIT 0")
         column_names = [description[0] for description in cursor.description]
 
-        # Execute a query to get all data
+        
         cursor.execute("SELECT * FROM BOOK_LOANS")
         loans = cursor.fetchall()
 
@@ -58,11 +58,11 @@ def get_book_copies_with_column_names():
     conn = connect_to_database(db_path)
     try:
         cursor = conn.cursor()
-        # Execute a query to get column names
+        
         cursor.execute("SELECT * FROM BOOK_COPIES LIMIT 0")
         column_names = [description[0] for description in cursor.description]
 
-        # Execute a query to get all data
+        
         cursor.execute("SELECT * FROM BOOK_COPIES")
         loans = cursor.fetchall()
 
@@ -144,7 +144,7 @@ def insert_into_book(title, book_publisher):
         global book_id 
         book_id = cursor.lastrowid
         conn.commit()
-        return book_id  # Return the book_id
+        return book_id 
     except sqlite3.Error as e:
         print("SQLite error: ", e)
         return None  # Return None in case of an error
@@ -166,7 +166,6 @@ def insert_into_book_author(book_author):
         conn.close()
 
 def insert_into_book_copies():
-    global book_id_global  # Access the global variable
     db_path = r'C:\Users\HP\Documents\GitHub\sqlite-tools-win32-x86-3430100\part3.db'
     conn = sqlite3.connect(db_path)
     try:
@@ -226,11 +225,11 @@ def get_borrower_with_column_names():
     conn = connect_to_database(db_path)
     try:
         cursor = conn.cursor()
-        # Execute a query to get column names
+        
         cursor.execute("SELECT * FROM BORROWER LIMIT 0")
         column_names = [description[0] for description in cursor.description]
 
-        # Execute a query to get all data
+        
         cursor.execute("SELECT * FROM BORROWER")
         borrower = cursor.fetchall()
 
@@ -246,7 +245,7 @@ def get_book_with_column_names():
     conn = connect_to_database(db_path)
     try:
         cursor = conn.cursor()
-        # Execute a query to get column names
+        
         cursor.execute('''SELECT B.book_id,
                                  B.title,
                                  B.book_publisher,
@@ -259,7 +258,7 @@ def get_book_with_column_names():
                                  LIMIT 0;''')
         column_names = [description[0] for description in cursor.description]
 
-        # Execute a query to get all data
+        
         cursor.execute(''' SELECT B.book_id,
                                  B.title,
                                  B.book_publisher,
@@ -295,12 +294,89 @@ def Loans_per_branch(book_title):
     finally:
         conn.close()
 
+def Search_by_name(Name):
+    db_path = r'C:\Users\HP\Documents\GitHub\sqlite-tools-win32-x86-3430100\part3.db'
+    conn = connect_to_database(db_path)
+    try:
+        cursor = conn.cursor()
+        cursor.execute('''
+        SELECT
+        vBookLoanInfo.Card_no,
+        BORROWER.Name,
+        Book.Title,
+        '$'||vBookLoanInfo.LateFeeBalance
+        FROM
+            vBookLoanInfo
+        JOIN
+            Book ON vBookLoanInfo.Book_id = Book.Book_id
+        JOIN
+            BORROWER ON vBookLoanInfo.Card_no = BORROWER.Card_no
+        WHERE BORROWER.Name = ? OR BORROWER.Name LIKE '%'||?||'%';''', (Name, Name))
+        result = cursor.fetchall()
+        return result
+    except sqlite3.Error as e:
+        print("SQLite error: ", e)
+    finally:
+        conn.close()
+
+def Search_by_id(Card_no):
+    db_path = r'C:\Users\HP\Documents\GitHub\sqlite-tools-win32-x86-3430100\part3.db'
+    conn = connect_to_database(db_path)
+    try:
+        cursor = conn.cursor()
+        cursor.execute('''
+        SELECT
+        vBookLoanInfo.Card_no,
+        BORROWER.Name,
+        Book.Title,
+        '$' || vBookLoanInfo.LateFeeBalance
+        FROM
+            vBookLoanInfo
+        JOIN
+            Book ON vBookLoanInfo.Book_id = Book.Book_id
+        JOIN
+            BORROWER ON vBookLoanInfo.Card_no = BORROWER.Card_no
+        WHERE vBookLoanInfo.Card_no = ? ;''', (Card_no,))
+        result = cursor.fetchall()
+        return result
+    except sqlite3.Error as e:
+        print("SQLite error: ", e)
+    finally:
+        conn.close()
+
+def Search():
+    db_path = r'C:\Users\HP\Documents\GitHub\sqlite-tools-win32-x86-3430100\part3.db'
+    conn = connect_to_database(db_path)
+    try:
+        cursor = conn.cursor()
+        cursor.execute('''
+        SELECT
+        vBookLoanInfo.Card_no,
+        BORROWER.Name,
+        Book.Title,
+        '$' || vBookLoanInfo.LateFeeBalance
+        FROM
+            vBookLoanInfo
+        JOIN
+            Book ON vBookLoanInfo.Book_id = Book.Book_id
+        JOIN
+            BORROWER ON vBookLoanInfo.Card_no = BORROWER.Card_no
+        ORDER BY vBookLoanInfo.LateFeeBalance;''')
+        result = cursor.fetchall()
+        return result
+    except sqlite3.Error as e:
+        print("SQLite error: ", e)
+    finally:
+        conn.close()
+
+
+
 def get_book_info_with_column_names(bookidOrbookTitle, borrower_id):
     db_path = r'C:\Users\HP\Documents\GitHub\sqlite-tools-win32-x86-3430100\part3.db'
     conn = connect_to_database(db_path)
     try:
         cursor = conn.cursor()
-        # Execute a query to get column names
+        
         cursor.execute('''SELECT book_id, card_no, date_out, due_date, returned_date, totaldaysloanedout, title, totaldaysreturnedlate, branch_id,
                           (CASE WHEN LateFeeBalance = 0 THEN 'NON APPLICABLE' 
                           ELSE '$' || printf("%.2f", LateFeeBalance) 
@@ -309,7 +385,7 @@ def get_book_info_with_column_names(bookidOrbookTitle, borrower_id):
                           LIMIT 0;''')
         column_names = [description[0] for description in cursor.description]
 
-        # Execute a query to get all data
+        
         cursor.execute('''SELECT book_id, card_no, date_out, due_date, returned_date, totaldaysloanedout, title, totaldaysreturnedlate, branch_id,
                           (CASE WHEN LateFeeBalance = 0 THEN 'NON APPLICABLE' 
                           ELSE '$' || printf("%.2f", LateFeeBalance) 
@@ -371,7 +447,7 @@ def get_bookinfo_no_criteria_with_column_names():
     conn = connect_to_database(db_path)
     try:
         cursor = conn.cursor()
-        # Execute a query to get column names
+        
         cursor.execute('''SELECT book_id, card_no, date_out, due_date, returned_date, totaldaysloanedout, title, totaldaysreturnedlate, branch_id,
                           (CASE WHEN LateFeeBalance = 0 THEN 'NON APPLICABLE' 
                           ELSE '$' || printf("%.2f", LateFeeBalance) 
@@ -381,7 +457,7 @@ def get_bookinfo_no_criteria_with_column_names():
                           LIMIT 0;''')
         column_names = [description[0] for description in cursor.description]
 
-        # Execute a query to get all data
+        
         cursor.execute(''' SELECT book_id, card_no, date_out, due_date, returned_date, totaldaysloanedout, title, totaldaysreturnedlate, branch_id,
                           (CASE WHEN LateFeeBalance = 0 THEN 'NON APPLICABLE' 
                           ELSE '$' || printf("%.2f", LateFeeBalance) 
