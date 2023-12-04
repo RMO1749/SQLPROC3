@@ -365,21 +365,61 @@ def get_book_titles():
     finally:
         conn.close()
         
-def loans_returns(book_title):
+#__________________________________________________ 
+def loans_returns():
     db_path = r'C:\Users\bajra\Desktop\SQLpart3\project3.db'
     conn = connect_to_database(db_path)
     try:
         cursor = conn.cursor()
         cursor.execute('''
-                       SELECT BOOK_LOANS.Due_date , BOOK_LOANS.Returned_date
-                       FROM BOOK_LOANS
-                       WHERE BOOK_LOANS.Returned_date  > BOOK_LOANS.Due_date ;
-                       GROUP BY BOOK_LOANS.Branch_id
-                       ''', (book_title,))
-        
+            SELECT BOOK_LOANS.Due_date, BOOK_LOANS.Returned_date, 
+            FROM BOOK_LOANS
+            WHERE BOOK_LOANS.Returned_date > BOOK_LOANS.Due_date AND Late = 1
+            GROUP BY BOOK_LOANS.Due_date;
+        ''',)
+
         result = cursor.fetchall()
         return result
     except sqlite3.Error as e:
         print("SQLite error: ", e)
+    finally:
+        conn.close()
+#__________________________________________________ 
+def get_book_copies_with_column_names():
+    db_path = r'C:\Users\bajra\Desktop\SQLpart3\project3.db'
+    conn = connect_to_database(db_path)
+    try:
+        cursor = conn.cursor()
+        # Execute a query to get column names
+        cursor.execute("SELECT * FROM BOOK_COPIES LIMIT 0")
+        column_names = [description[0] for description in cursor.description]
+
+        # Execute a query to get all data
+        cursor.execute("SELECT * FROM BOOK_COPIES")
+        loans = cursor.fetchall()
+
+        return column_names, loans
+    except sqlite3.Error as e:
+        print("SQLite error: ", e)
+        return [], []  # Return empty lists in case of error
+    finally:
+        conn.close()
+        
+def test():
+    db_path = r'C:\Users\bajra\Desktop\SQLpart3\project3.db'
+    conn = connect_to_database(db_path)
+    try:
+        cursor = conn.cursor()
+
+        # Execute a query to get specific columns
+        cursor.execute("SELECT Due_date, Returned_date, Late, Returned_date - Due_date FROM BOOK_LOANS WHERE Late = 1")
+
+        # Fetch all data
+        loans = cursor.fetchall()
+
+        return loans
+    except sqlite3.Error as e:
+        print("SQLite error: ", e)
+        return []  # Return an empty list in case of error
     finally:
         conn.close()
