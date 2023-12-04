@@ -344,7 +344,7 @@ show_new_borrower_button.grid(row=7, column=1, columnspan=2, pady=5)
 
 
 query4_frame = create_query_tab("Query 4")
-text = tk.Label(query4_frame, text="Number number of copies loaned per branch by Title",font=("Times New Roman", 13))
+text = tk.Label(query4_frame, text="Copies Loaned per Branch by Book Title",font=("Times New Roman", 13))
 text.grid(row=0, column=2, sticky='W')
 
 #Text entry box to enter the book title
@@ -359,8 +359,8 @@ submit_button.grid(row=2, column=1, columnspan=2, pady=5)
 #List for every borrower the ID, name, and if there is any lateFee balance. The user has the
 #right to search either by a borrower ID, name, part of the name, or to run the query with no
 #filters/criteria.
-query6_frame = create_query_tab("Query 6")
-text = tk.Label(query6_frame, text="Late Fees",font=("Times New Roman", 13))
+query6_frame = create_query_tab("Query 6a")
+text = tk.Label(query6_frame, text="View Late fees",font=("Times New Roman", 13))
 text.grid(row=0, column=2, sticky='W')
 #buttons to choose filter category 
 tk.Label(query6_frame, text="Filter by:").grid(row=2, column=1, sticky='W')
