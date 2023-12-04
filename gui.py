@@ -64,7 +64,7 @@ def show_book_loans():
 
 def show_book_copies():
     popup = tk.Toplevel(root)
-    popup.title("Book Loans")
+    popup.title("Book Copies")
 
     # Create a Treeview in the pop-up window
     popup_treeview = ttk.Treeview(popup, columns=('temp',), show='headings')
@@ -353,7 +353,9 @@ title_entry.grid(row=1, column=2, pady=5, padx=5, sticky='EW')
 submit_button = tk.Button(query4_frame, text="Submit", command=lambda:show_book_loans_per_branch(title_entry.get()))
 submit_button.grid(row=2, column=1, columnspan=2, pady=5)
 
-
+query5_frame = create_query_tab("Query 5")
+text = tk.Label(query5_frame, text="Late Fees",font=("Times New Roman", 13))
+text.grid(row=0, column=2, sticky='W')
 
 
 
