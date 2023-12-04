@@ -160,7 +160,79 @@ def Loans_per_branch(book_title):
     finally:
         conn.close()
 
+def Search_by_name(Name):
+    db_path = r'C:\Users\Vidara\Desktop\SQL GUI\SQLPROC3\project3.db'
+    conn = connect_to_database(db_path)
+    try:
+        cursor = conn.cursor()
+        cursor.execute('''
+        SELECT
+        vBookLoanInfo.Card_no,
+        BORROWER.Name,
+        Book.Title,
+        '$'||vBookLoanInfo.LateFeeBalance
+        FROM
+            vBookLoanInfo
+        JOIN
+            Book ON vBookLoanInfo.Book_id = Book.Book_id
+        JOIN
+            BORROWER ON vBookLoanInfo.Card_no = BORROWER.Card_no
+        WHERE BORROWER.Name = ? OR BORROWER.Name LIKE '%'||?||'%';''', (Name, Name))
+        result = cursor.fetchall()
+        return result
+    except sqlite3.Error as e:
+        print("SQLite error: ", e)
+    finally:
+        conn.close()
 
+def Search_by_id(Card_no):
+    db_path = r'C:\Users\Vidara\Desktop\SQL GUI\SQLPROC3\project3.db'
+    conn = connect_to_database(db_path)
+    try:
+        cursor = conn.cursor()
+        cursor.execute('''
+        SELECT
+        vBookLoanInfo.Card_no,
+        BORROWER.Name,
+        Book.Title,
+        '$' || vBookLoanInfo.LateFeeBalance
+        FROM
+            vBookLoanInfo
+        JOIN
+            Book ON vBookLoanInfo.Book_id = Book.Book_id
+        JOIN
+            BORROWER ON vBookLoanInfo.Card_no = BORROWER.Card_no
+        WHERE vBookLoanInfo.Card_no = ? ;''', (Card_no,))
+        result = cursor.fetchall()
+        return result
+    except sqlite3.Error as e:
+        print("SQLite error: ", e)
+    finally:
+        conn.close()
 
+def Search():
+    db_path = r'C:\Users\Vidara\Desktop\SQL GUI\SQLPROC3\project3.db'
+    conn = connect_to_database(db_path)
+    try:
+        cursor = conn.cursor()
+        cursor.execute('''
+        SELECT
+        vBookLoanInfo.Card_no,
+        BORROWER.Name,
+        Book.Title,
+        '$' || vBookLoanInfo.LateFeeBalance
+        FROM
+            vBookLoanInfo
+        JOIN
+            Book ON vBookLoanInfo.Book_id = Book.Book_id
+        JOIN
+            BORROWER ON vBookLoanInfo.Card_no = BORROWER.Card_no
+        ORDER BY vBookLoanInfo.LateFeeBalance;''')
+        result = cursor.fetchall()
+        return result
+    except sqlite3.Error as e:
+        print("SQLite error: ", e)
+    finally:
+        conn.close()
 
 
