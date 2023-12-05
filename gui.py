@@ -61,8 +61,6 @@ def show_book_loans():
     popup_treeview.configure(yscroll=scrollbar.set)
     scrollbar.pack(side='right', fill='y')
     
-    #-------------------------------------------------------------------
-    
 def show_late_returns(returned_date, due_date):
     print("Returned Date:", returned_date)
     popup = tk.Toplevel(root)
@@ -89,9 +87,6 @@ def show_late_returns(returned_date, due_date):
     scrollbar = ttk.Scrollbar(popup, orient='vertical', command=popup_treeview.yview)
     popup_treeview.configure(yscroll=scrollbar.set)
     scrollbar.pack(side='right', fill='y')
-
-
-    #-------------------------------------------------------------------
 
 def show_book_copies():
     popup = tk.Toplevel(root)
@@ -348,8 +343,8 @@ def show_book_loans_per_branch(book_title):
     # Display book loans per branch from Loans_per_branch(book_title):
     print("Book Title:", book_title)
     popup = tk.Toplevel(root)
-    
     popup.title("Book Loans per Branch")
+
     # the Loans_per_branch() function should get the book title from the title_entry box
     book_loans_perbranch = project3.Loans_per_branch(book_title)
 
@@ -384,8 +379,6 @@ title_entry.grid(row=1, column=2, pady=5, padx=5, sticky='EW')
 submit_button = tk.Button(query4_frame, text="Submit", command=lambda:show_book_loans_per_branch(title_entry.get()))
 submit_button.grid(row=2, column=1, columnspan=2, pady=5)
 
-#__________________________________________________ 
-#QUERY 5
 query5_frame = create_query_tab("Query 5")
 
 text = tk.Label(query5_frame, text="Query 5: Book_Loans that were returned late and how many days they were late",font=("Times New Roman", 13))
@@ -402,9 +395,6 @@ returned_date_entry.grid(row=5, column=2, pady=5)
 #send reuslts of date entry to show_late_returns function
 show_loans_button = tk.Button(query5_frame, text="Show Book Loans", command=lambda:show_late_returns(returned_date_entry.get(), due_date_entry.get()))
 show_loans_button.grid(row=7, column=1, columnspan=2, pady=5)
-
-
-#__________________________________________________ 
 
 
 
@@ -425,6 +415,13 @@ filter_combobox['values'] = ['Borrower ID', 'Name', 'Part of Name', 'No Filter']
 filter_combobox.current(0)
 
 #Text entry box to give input dpending on the filer
+tk.Label(query6a_frame, text="Input:").grid(row=1, column=1, sticky='W')
+input_entry = tk.Entry(query6a_frame)
+input_entry.grid(row=1, column=2, pady=5, padx=5, sticky='EW')
+#Submit button to submit the filter and input to show_late_fees function
+submit_button = tk.Button(query6a_frame, text="Submit", command=lambda:show_late_fees(filter_combobox.get(), input_entry.get()))
+submit_button.grid(row=3, column=1, columnspan=2, pady=5)
+
 
 query6b_frame = create_query_tab("Query 6b")
 
