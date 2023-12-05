@@ -412,7 +412,7 @@ def test():
         cursor = conn.cursor()
 
         # Execute a query to get specific columns
-        cursor.execute("SELECT Due_date, Returned_date, Late, Returned_date - Due_date FROM BOOK_LOANS WHERE Late = 1")
+        cursor.execute("SELECT Due_date, Returned_date, Late, julianday(Returned_date) - julianday(Due_date) AS numdate FROM BOOK_LOANS WHERE Late = 1")
 
         # Fetch all data
         loans = cursor.fetchall()

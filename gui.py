@@ -68,11 +68,11 @@ def show_late_returns():
     popup.title("Book Loans")
 
     # Create a Treeview in the pop-up window
-    popup_treeview = ttk.Treeview(popup, columns=('temp',), show='headings')
+    popup_treeview = ttk.Treeview(popup, columns=('Due_date', 'Returned_date', 'Late', 'NumDate'), show='headings')
     popup_treeview.pack(fill='both', expand=True)
 
     book_copies = project3.test()
-    column_names = ['Due_date', 'Returned_date', 'Late']
+    column_names = ['Due_date', 'Returned_date', 'Late', 'NumDate']
     popup_treeview['columns'] = column_names
 
     for col in column_names:
@@ -85,10 +85,10 @@ def show_late_returns():
         popup_treeview.insert('', 'end', values=loan)
 
     # Add a scrollbar
-    scrollbar = ttk.Scrollbar(popup, orient='vertical',
-                              command=popup_treeview.yview)
+    scrollbar = ttk.Scrollbar(popup, orient='vertical', command=popup_treeview.yview)
     popup_treeview.configure(yscroll=scrollbar.set)
     scrollbar.pack(side='right', fill='y')
+
 
     #-------------------------------------------------------------------
 
