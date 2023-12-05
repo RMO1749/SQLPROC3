@@ -413,8 +413,7 @@ def test(Returned_date, Due_date):
 
         # Execute a query to get specific columns
         cursor.execute('''SELECT Due_date, Returned_date,julianday(Returned_date) - julianday(Due_date) as Days_Late FROM BOOK_LOANS WHERE
-                          Late = 1
-                          AND Due_date BETWEEN ? AND ?''', (Due_date,Returned_date))
+                          Late = 1 AND Returned_date BETWEEN ? AND ?''', (Due_date,Returned_date))
 
         # Fetch all data
         loans = cursor.fetchall()
