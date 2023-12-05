@@ -472,3 +472,23 @@ def get_bookinfo_no_criteria_with_column_names():
         return [], []  # Return empty lists in case of error
     finally:
         conn.close()
+
+def get_dates(Returned_date, Due_date):
+    db_path = r'C:\Users\HP\Documents\GitHub\sqlite-tools-win32-x86-3430100\part3.db'
+    conn = connect_to_database(db_path)
+    try:
+        cursor = conn.cursor()
+
+        # Execute a query to get specific columns
+        cursor.execute('''SELECT Due_date, Returned_date,julianday(Returned_date) - julianday(Due_date) as Days_Late FROM BOOK_LOANS WHERE
+                          Late = 1 AND Returned_date BETWEEN ? AND ?''', (Due_date,Returned_date))
+
+        # Fetch all data
+        loans = cursor.fetchall()
+
+        return loans
+    except sqlite3.Error as e:
+        print("SQLite error: ", e)
+        return []  # Return an empty list in case of error
+    finally:
+        conn.close()

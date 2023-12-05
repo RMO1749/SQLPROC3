@@ -428,9 +428,59 @@ title_entry.grid(row=1, column=2, pady=5, padx=5, sticky='EW')
 submit_button = tk.Button(query4_frame, text="Submit", command=lambda:show_book_loans_per_branch(title_entry.get()))
 submit_button.grid(row=2, column=1, columnspan=2, pady=5)
 
+#__________________________________________________ 
+#QUERY 5
 query5_frame = create_query_tab("Query 5")
-text = tk.Label(query5_frame, text="Late Fees",font=("Times New Roman", 13))
-text.grid(row=0, column=2, sticky='W')
+ #-------------------------------------------------------------------
+    
+def show_late_returns(returned_date, due_date):
+    print("Returned Date:", returned_date)
+    popup = tk.Toplevel(root)
+    popup.title("Book Loans")
+
+    # Create a Treeview in the pop-up window
+    popup_treeview = ttk.Treeview(popup, columns=('Due_date', 'Returned_date', 'Late', 'NumDate'), show='headings')
+    popup_treeview.pack(fill='both', expand=True)
+
+    book_copies = project3.get_dates(returned_date, due_date)
+    column_names = ['Due_date', 'Returned_date','Days_Late']
+    popup_treeview['columns'] = column_names
+
+    for col in column_names:
+        popup_treeview.heading(col, text=col)
+        # Adjust width as needed
+        popup_treeview.column(col, anchor='w', width=120)
+
+    # Populate the Treeview with new data
+    for loan in book_copies:
+        popup_treeview.insert('', 'end', values=loan)
+
+    # Add a scrollbar
+    scrollbar = ttk.Scrollbar(popup, orient='vertical', command=popup_treeview.yview)
+    popup_treeview.configure(yscroll=scrollbar.set)
+    scrollbar.pack(side='right', fill='y')
+
+
+    #-------------------------------------------------------------------
+
+
+text = tk.Label(query5_frame, text="Query 5: Book_Loans that were returned late and how many days they were late",font=("Times New Roman", 13))
+text.grid(row=0, column=1, sticky='W')
+#Due Date entry
+tk.Label(query5_frame, text="Due Date:").grid(row=4, column=0, sticky='W')
+due_date_entry = DateEntry(query5_frame, date_pattern='y-mm-dd')
+due_date_entry.grid(row=4, column=2, pady=5)                         
+# Returned Date entry
+tk.Label(query5_frame, text="Returned Date:").grid(row=5, column=0, sticky='W')
+returned_date_entry = DateEntry(query5_frame, date_pattern='y-mm-dd')
+returned_date_entry.grid(row=5, column=2, pady=5)
+
+#send reuslts of date entry to show_late_returns function
+show_loans_button = tk.Button(query5_frame, text="Show Book Loans", command=lambda:show_late_returns(returned_date_entry.get(), due_date_entry.get()))
+show_loans_button.grid(row=7, column=1, columnspan=2, pady=5)
+
+
+#__________________________________________________ 
 
 
 
