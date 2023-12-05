@@ -5,7 +5,7 @@ def connect_to_database(db_path):
     return conn
 
 def get_book_id_by_title(book_title):
-    db_path = r'C:\Users\bajra\Desktop\SQLpart3\project3.db'
+    db_path = r'C:\Users\Vidara\Desktop\SQL GUI\SQLPROC3\project3.db'
     conn = connect_to_database(db_path)
     try:
         cursor = conn.cursor()
@@ -20,7 +20,7 @@ def get_book_id_by_title(book_title):
 
 
 def get_branchid_by_bookid(book_id):
-    db_path = r'C:\Users\bajra\Desktop\SQLpart3\project3.db'
+    db_path = r'C:\Users\Vidara\Desktop\SQL GUI\SQLPROC3\project3.db'
     conn = connect_to_database(db_path)
     try:
         cursor = conn.cursor()
@@ -34,7 +34,7 @@ def get_branchid_by_bookid(book_id):
         conn.close()
 
 def get_book_loans_with_column_names():
-    db_path = r'C:\Users\bajra\Desktop\SQLpart3\project3.db'
+    db_path = r'C:\Users\Vidara\Desktop\SQL GUI\SQLPROC3\project3.db'
     conn = connect_to_database(db_path)
     try:
         cursor = conn.cursor()
@@ -54,7 +54,7 @@ def get_book_loans_with_column_names():
         conn.close()
 
 def get_book_copies_with_column_names():
-    db_path = r'C:\Users\bajra\Desktop\SQLpart3\project3.db'
+    db_path = r'C:\Users\Vidara\Desktop\SQL GUI\SQLPROC3\project3.db'
     conn = connect_to_database(db_path)
     try:
         cursor = conn.cursor()
@@ -74,7 +74,7 @@ def get_book_copies_with_column_names():
         conn.close()
 
 def get_all_book_titles():
-    db_path = r'C:\Users\bajra\Desktop\SQLpart3\project3.db'
+    db_path = r'C:\Users\Vidara\Desktop\SQL GUI\SQLPROC3\project3.db'
     conn = connect_to_database(db_path)
     try:
         cursor = conn.cursor()
@@ -88,7 +88,7 @@ def get_all_book_titles():
         conn.close()
 
 def get_all_book_publisher():
-    db_path = r'C:\Users\bajra\Desktop\SQLpart3\project3.db'
+    db_path = r'C:\Users\Vidara\Desktop\SQL GUI\SQLPROC3\project3.db'
     conn = connect_to_database(db_path)
     try:
         cursor = conn.cursor()
@@ -102,7 +102,7 @@ def get_all_book_publisher():
         conn.close()
 
 def get_all_cardNo():
-    db_path = r'C:\Users\bajra\Desktop\SQLpart3\project3.db'
+    db_path = r'C:\Users\Vidara\Desktop\SQL GUI\SQLPROC3\project3.db'
     conn = connect_to_database(db_path)
     try:
         cursor = conn.cursor()
@@ -116,7 +116,7 @@ def get_all_cardNo():
         conn.close()
 
 def insert_book_loan(book_id, branch_id, card_number, date_out, due_date, returned_date):
-    db_path = r'C:\Users\bajra\Desktop\SQLpart3\project3.db'
+    db_path = r'C:\Users\Vidara\Desktop\SQL GUI\SQLPROC3\project3.db'
     conn = connect_to_database(db_path)
     try:
         cursor = conn.cursor()
@@ -136,7 +136,7 @@ def insert_book_loan(book_id, branch_id, card_number, date_out, due_date, return
         conn.close()
 
 def insert_into_book(title, book_publisher):
-    db_path = r'C:\Users\bajra\Desktop\SQLpart3\project3.db'
+    db_path = r'C:\Users\Vidara\Desktop\SQL GUI\SQLPROC3\project3.db'
     conn = sqlite3.connect(db_path)
     try:
         cursor = conn.cursor()
@@ -152,7 +152,7 @@ def insert_into_book(title, book_publisher):
         conn.close()
 
 def insert_into_book_author(book_author):
-    db_path = r'C:\Users\bajra\Desktop\SQLpart3\project3.db'
+    db_path = r'C:\Users\Vidara\Desktop\SQL GUI\SQLPROC3\project3.db'
     conn = sqlite3.connect(db_path)
     try:
         cursor = conn.cursor()
@@ -167,7 +167,7 @@ def insert_into_book_author(book_author):
 
 def insert_into_book_copies():
     global book_id_global  # Access the global variable
-    db_path = r'C:\Users\bajra\Desktop\SQLpart3\project3.db'
+    db_path = r'C:\Users\Vidara\Desktop\SQL GUI\SQLPROC3\project3.db'
     conn = sqlite3.connect(db_path)
     try:
         cursor = conn.cursor()
@@ -187,7 +187,7 @@ def insert_into_book_copies():
         
 
 def create_book_copies_trigger():
-    db_path = r'C:\Users\bajra\Desktop\SQLpart3\project3.db'
+    db_path = r'C:\Users\Vidara\Desktop\SQL GUI\SQLPROC3\project3.db'
     conn = connect_to_database(db_path)
     try:
         cursor = conn.cursor()
@@ -208,7 +208,7 @@ def create_book_copies_trigger():
         conn.close()
 
 def insert_borrower(name, address, phone):
-    db_path = r'C:\Users\bajra\Desktop\SQLpart3\project3.db'
+    db_path = r'C:\Users\Vidara\Desktop\SQL GUI\SQLPROC3\project3.db'
     conn = connect_to_database(db_path)
     try:
         cursor = conn.cursor()
@@ -222,7 +222,7 @@ def insert_borrower(name, address, phone):
         conn.close()
 
 def get_borrower_with_column_names():
-    db_path = r'C:\Users\bajra\Desktop\SQLpart3\project3.db'
+    db_path = r'C:\Users\Vidara\Desktop\SQL GUI\SQLPROC3\project3.db'
     conn = connect_to_database(db_path)
     try:
         cursor = conn.cursor()
@@ -242,7 +242,7 @@ def get_borrower_with_column_names():
         conn.close()
 
 def get_book_with_column_names():
-    db_path = r'C:\Users\bajra\Desktop\SQLpart3\project3.db'
+    db_path = r'C:\Users\Vidara\Desktop\SQL GUI\SQLPROC3\project3.db'
     conn = connect_to_database(db_path)
     try:
         cursor = conn.cursor()
@@ -279,7 +279,7 @@ def get_book_with_column_names():
         conn.close()
 
 def Loans_per_branch(book_title):
-    db_path = r'C:\Users\bajra\Desktop\SQLpart3\project3.db'
+    db_path = r'C:\Users\Vidara\Desktop\SQL GUI\SQLPROC3\project3.db'
     conn = connect_to_database(db_path)
     try:
         cursor = conn.cursor()
@@ -296,7 +296,7 @@ def Loans_per_branch(book_title):
         conn.close()
 
 def get_book_info_with_column_names(bookidOrbookTitle, borrower_id):
-    db_path = r'C:\Users\bajra\Desktop\SQLpart3\project3.db'
+    db_path = r'C:\Users\Vidara\Desktop\SQL GUI\SQLPROC3\project3.db'
     conn = connect_to_database(db_path)
     try:
         cursor = conn.cursor()
@@ -338,7 +338,7 @@ def get_book_info_with_column_names(bookidOrbookTitle, borrower_id):
 
 
 def get_all_borrowerInfo():
-    db_path = r'C:\Users\bajra\Desktop\SQLpart3\project3.db'
+    db_path = r'C:\Users\Vidara\Desktop\SQL GUI\SQLPROC3\project3.db'
     conn = connect_to_database(db_path)
     try:
         cursor = conn.cursor()
@@ -352,7 +352,7 @@ def get_all_borrowerInfo():
         conn.close()
 
 def get_book_titles():
-    db_path = r'C:\Users\bajra\Desktop\SQLpart3\project3.db'
+    db_path = r'C:\Users\Vidara\Desktop\SQL GUI\SQLPROC3\project3.db'
     conn = connect_to_database(db_path)
     try:
         cursor = conn.cursor()
@@ -367,7 +367,7 @@ def get_book_titles():
         
 #__________________________________________________ 
 def loans_returns():
-    db_path = r'C:\Users\bajra\Desktop\SQLpart3\project3.db'
+    db_path = r'C:\Users\Vidara\Desktop\SQL GUI\SQLPROC3\project3.db'
     conn = connect_to_database(db_path)
     try:
         cursor = conn.cursor()
@@ -386,7 +386,7 @@ def loans_returns():
         conn.close()
 #__________________________________________________ 
 def get_book_copies_with_column_names():
-    db_path = r'C:\Users\bajra\Desktop\SQLpart3\project3.db'
+    db_path = r'C:\Users\Vidara\Desktop\SQL GUI\SQLPROC3\project3.db'
     conn = connect_to_database(db_path)
     try:
         cursor = conn.cursor()
@@ -405,14 +405,16 @@ def get_book_copies_with_column_names():
     finally:
         conn.close()
         
-def test():
-    db_path = r'C:\Users\bajra\Desktop\SQLpart3\project3.db'
+def test(Returned_date, Due_date):
+    db_path = r'C:\Users\Vidara\Desktop\SQL GUI\SQLPROC3\project3.db'
     conn = connect_to_database(db_path)
     try:
         cursor = conn.cursor()
 
         # Execute a query to get specific columns
-        cursor.execute("SELECT Due_date, Returned_date, Late, Returned_date - Due_date FROM BOOK_LOANS WHERE Late = 1")
+        cursor.execute('''SELECT Due_date, Returned_date,julianday(Returned_date) - julianday(Due_date) as Days_Late FROM BOOK_LOANS WHERE
+                          Late = 1
+                          AND Due_date BETWEEN ? AND ?''', (Due_date,Returned_date))
 
         # Fetch all data
         loans = cursor.fetchall()
